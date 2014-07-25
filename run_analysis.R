@@ -37,21 +37,36 @@ colnames(activity_labels) <- c("ID","Activity")
 
 ## read training data set
 
-subject_train <- read.table("./data/UCI HAR Dataset/train/subject_train.txt", sep = " ", header=FALSE)
-if (!exists("X_train_data")) {
-  X_train_data <- read.table("./data/UCI HAR Dataset/train/X_train.txt", header=FALSE)
+trainFiles <- matrix(c("subject_train","./data/UCI HAR Dataset/train/subject_train.txt",
+                       "X_train_data", "./data/UCI HAR Dataset/train/X_train.txt",
+                       "y_train_levels", "./data/UCI HAR Dataset/train/y_train.txt"),
+                     ncol = 2, byrow = TRUE)
+colnames(trainFiles) <- c("DataObject","FileLoc")
+
+for (i in 1:nrow(trainFiles)) {
+    if (!exists(trainFiles[i,1])) {
+        assign(trainFiles[i,1], read.table(trainFiles[i,2],header=FALSE))
+    }
 }
-y_train_labels <- read.table("./data/UCI HAR Dataset/train/y_train.txt", header=FALSE)
+
+## label columns
 
 colnames(X_train_data) <- features[,2]
 colnames(subject_train) <- "Subject"
-colnames(y_train_labels) <- c("Activity")
-foobar <- factor(y_train_labels, levels=activity_labels$ID, labels=activity_labels$Activity)
+y_train_labels <- as.matrix(factor(y_train_levels[,1], levels=activity_labels$ID, labels=activity_labels$Activity))
+colnames(y_train_labels) <- "Activity"
 
 ## find indices of columns with mean or standard deviation measurements
 
 train_means <- grep("mean()",features[,2])
 train_stds <- grep("std()",features[,2])
 train_indices <- sort(c(train_means,train_stds))
+
+## create dataframe including training data
+
+df_train <- data.frame(X_train_data[,train_indices])
+colnames(df_train) <- features[train_indices,2]
+df_train <- cbind(subject_train, y_train_labels, df_train)
+
 
 
