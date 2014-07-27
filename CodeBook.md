@@ -4,6 +4,14 @@ GCD_Tidy_DataSet
 Study Design
 ------------
 
+This project did not involve completing a study design, rather
+a publicly available data set was used to practice techniques
+for getting and cleaning data. The data set include time and
+frequency domain measurements of filtered accelerometer and
+gyroscope (3 axes each) data measured with a smartphone worn
+by 30 subjects and performing activities fitting six categories.
+For further details on how the raw data was filtered, see the
+file `features_info.txt` archived within the UCI HAR Dataset. 
 
 Code Book
 ---------
