@@ -155,6 +155,10 @@ Note that the angle() column was discarded, therefore the five additional vector
 included in the original dataset and referred to near the end of `features_info.txt`
 with 'Mean' in the name that are used on the angle() variable were also discarded.
 
+Note according the the dataset `README.txt', "Features are normalized and bounded
+within [-1,1]" therefore the continuous measurements in the tidy data set have
+no units.
+
 Reference
 ---------
 
