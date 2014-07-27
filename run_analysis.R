@@ -35,38 +35,69 @@ features <- read.table("./data/UCI HAR Dataset/features.txt", sep = " ", header=
 
 colnames(activity_labels) <- c("ID","Activity")
 
-## read training data set
+## read training data set and test data set
 
-trainFiles <- matrix(c("subject_train","./data/UCI HAR Dataset/train/subject_train.txt",
-                       "X_train_data", "./data/UCI HAR Dataset/train/X_train.txt",
-                       "y_train_levels", "./data/UCI HAR Dataset/train/y_train.txt"),
+inFiles <- matrix(c("subject_train","./data/UCI HAR Dataset/train/subject_train.txt",
+                     "X_train_data", "./data/UCI HAR Dataset/train/X_train.txt",
+                     "y_train_levels", "./data/UCI HAR Dataset/train/y_train.txt",
+                     "subject_test","./data/UCI HAR Dataset/test/subject_test.txt",
+                     "X_test_data","./data/UCI HAR Dataset/test/X_test.txt",
+                     "y_test_levels","./data/UCI HAR Dataset/test/y_test.txt"),
                      ncol = 2, byrow = TRUE)
-colnames(trainFiles) <- c("DataObject","FileLoc")
+colnames(inFiles) <- c("DataObject","FileLoc")
 
-for (i in 1:nrow(trainFiles)) {
-    if (!exists(trainFiles[i,1])) {
-        assign(trainFiles[i,1], read.table(trainFiles[i,2],header=FALSE))
+for (i in 1:nrow(inFiles)) {
+    if (!exists(inFiles[i,1])) {
+        print(paste("reading data from file for", inFiles[i,1]))
+        assign(inFiles[i,1], read.table(inFiles[i,2],header=FALSE))
     }
 }
 
 ## label columns
 
 colnames(X_train_data) <- features[,2]
+colnames(X_test_data) <- features[,2]
+
+#subject_train <- as.matrix(factor(subject_train[,1]))
+#subject_test <- as.matrix(factor(subject_test[,1]))
+
 colnames(subject_train) <- "Subject"
+colnames(subject_test) <- "Subject"
+
 y_train_labels <- as.matrix(factor(y_train_levels[,1], levels=activity_labels$ID, labels=activity_labels$Activity))
 colnames(y_train_labels) <- "Activity"
 
+y_test_labels <- as.matrix(factor(y_test_levels[,1], levels=activity_labels$ID, labels=activity_labels$Activity))
+colnames(y_test_labels) <- "Activity"
+
 ## find indices of columns with mean or standard deviation measurements
 
-train_means <- grep("mean()",features[,2])
-train_stds <- grep("std()",features[,2])
-train_indices <- sort(c(train_means,train_stds))
+indx_means <- grep("-mean\\(\\)",features[,2])
+indx_stds <- grep("-std\\(\\)",features[,2])
+indices <- sort(c(indx_means,indx_stds))
 
 ## create dataframe including training data
 
-df_train <- data.frame(X_train_data[,train_indices])
-colnames(df_train) <- features[train_indices,2]
+df_train <- data.frame(X_train_data[,indices])
+colnames(df_train) <- features[indices,2]
 df_train <- cbind(subject_train, y_train_labels, df_train)
 
+## create dataframe including test data 
 
+df_test <- data.frame(X_test_data[,indices])
+colnames(df_test) <- features[indices,2]
+df_test <- cbind(subject_test, y_test_labels, df_test)
 
+## merge train and test dataframes
+
+df_merged <- rbind(df_train, df_test)
+
+## second data set with average of each variable for each activity and each subject
+
+library(plyr)
+tidySummary <- ddply(df_merged, c("Subject","Activity"), function(df)colMeans(df[,3:ncol(df_merged)]) )
+arrange(tidySummary,Subject,Activity)
+
+## write tidy Summary to file
+
+write.table(tidySummary,"UCI_HAR_Tidy_Summary.txt")
