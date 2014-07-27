@@ -1,18 +1,25 @@
 GCD_Tidy_DataSet
 ================
 
-R Project to create tidy data set from UCI HAR Dataset (Getting and Cleaning Data Course Project1)
+R Project to create tidy data set from UCI HAR Dataset
+(Coursera Getting and Cleaning Data Course Project1)
 
-Execute R script run_analysis.R
+Usage
+-----
 
-## Course Project for Coursera "Getting & Cleaning Data"
+Execute R script `run_analysis.R`
 
-## fetches UCI HAR Dataset (if necessary) and completes the following
-## operations to create a tidy data set:
-##
-## 1) Merges the training and test sets
-## 2) Extracts only measurements on the mean and standard deviation
-## 3) Assigns descriptive activity names
-## 4) Labels data set with descriptive variable names
-## 5) Create new tidy data set with the average of each variable
-##    for each activity and each subject
+Description
+-----------
+
+Fetches UCI HAR Dataset and completes the following
+operations to create a tidy data set:
+
+1) Assigns descriptive activity names
+2) Labels data set with descriptive variable names
+3) Create test and train dataframes extracting only measurements
+   on the mean and standard deviation
+4) Merges the training and test dataframes
+5) Create new tidy data set with the average of each variable
+   for each activity and each subject
+6) Write the tidy data set to file
