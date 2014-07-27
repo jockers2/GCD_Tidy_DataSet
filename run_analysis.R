@@ -1,16 +1,6 @@
 ## run_analysis.R
 
-## Course Project for Coursera "Getting & Cleaning Data"
-
-## fetches UCI HAR Dataset (if necessary) and completes the following
-## operations to create a tidy data set:
-##
-## 1) Merges the training and test sets
-## 2) Extracts only measurements on the mean and standard deviation
-## 3) Assigns descriptive activity names
-## 4) Labels data set with descriptive variable names
-## 5) Create new tidy data set with the average of each variable
-##    for each activity and each subject
+## check for local copy of file and download if required
 
 fileUrl <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
 localFilename <- "UCI_HAR_Data.zip"
@@ -24,18 +14,24 @@ if (!file.exists(localFilename)) {
 
 dataFileList <- unzip(localFilename,list = TRUE)
 
+## unzip data files to ./data directory (if not already done)
+
 if (!file.exists("data")) {  
   unzip(localFilename, overwrite=FALSE, exdir="data")
 }
 
-## start reading data
+## read data files that include the descriptive labels for activity
+## code and labels for all the measurement vectors
 
-activity_labels <- read.table("./data/UCI HAR Dataset/activity_labels.txt", sep = " ", header=FALSE)
-features <- read.table("./data/UCI HAR Dataset/features.txt", sep = " ", header=FALSE)
+activity_labels <- read.table("./data/UCI HAR Dataset/activity_labels.txt",
+                              sep = " ", header=FALSE)
+features <- read.table("./data/UCI HAR Dataset/features.txt", sep = " ",
+                       header=FALSE)
 
 colnames(activity_labels) <- c("ID","Activity")
 
-## read training data set and test data set
+## read training data set and test data set if they do not already
+## exist in the environment (this saves a lot of time debugging)
 
 inFiles <- matrix(c("subject_train","./data/UCI HAR Dataset/train/subject_train.txt",
                      "X_train_data", "./data/UCI HAR Dataset/train/X_train.txt",
@@ -53,13 +49,10 @@ for (i in 1:nrow(inFiles)) {
     }
 }
 
-## label columns
+## label columns and assign factors to Activity column
 
 colnames(X_train_data) <- features[,2]
 colnames(X_test_data) <- features[,2]
-
-#subject_train <- as.matrix(factor(subject_train[,1]))
-#subject_test <- as.matrix(factor(subject_test[,1]))
 
 colnames(subject_train) <- "Subject"
 colnames(subject_test) <- "Subject"
@@ -88,11 +81,17 @@ df_test <- data.frame(X_test_data[,indices])
 colnames(df_test) <- features[indices,2]
 df_test <- cbind(subject_test, y_test_labels, df_test)
 
-## merge train and test dataframes
+## 'merge' train and test dataframes
 
 df_merged <- rbind(df_train, df_test)
 
-## second data set with average of each variable for each activity and each subject
+## second (tidy**) data set with average of each variable for each
+## activity and each subject. Uses plyr package and sorts by Subject
+##
+## ** each variable in one column
+## ** each observation in different row
+## ** one table for each "kind" of variable
+## ** multiple tables should each include a column to link tables
 
 library(plyr)
 tidySummary <- ddply(df_merged, c("Subject","Activity"), function(df)colMeans(df[,3:ncol(df_merged)]) )
