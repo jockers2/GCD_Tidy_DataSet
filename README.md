@@ -21,6 +21,8 @@ operations to create a tidy data set:
 
 3) Create test and train dataframes extracting only measurements
    on the mean and standard deviation
+   (please see CodeBook for further ratrionale on which measurements
+    were extracted)
    
 4) Merges the training and test dataframes
 

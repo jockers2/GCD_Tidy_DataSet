@@ -13,35 +13,149 @@ by 30 subjects and performing activities fitting six categories.
 For further details on how the raw data was filtered, see the
 file `features_info.txt` archived within the UCI HAR Dataset. 
 
-Code Book
----------
+Code Book - UCI_HAR_Tidy_Summary.txt
+------------------------------------
 
+Space delimited.
+181 lines (1 header + 180 data rows). 68 columns/variables:
+
+1. Subject  (Ordinal 1:30)
+    Subject ID
+        
+2. Activity (Categorical)
+    Activity Labels
+        WALKING
+        WALKING_UPSTAIRS
+        WALKING_DOWNSTAIRS
+        SITTING
+        STANDING
+        LAYING
+
+Columns 3 thru 32: (Continuous [-1,1])
+    Five groups of six time domain summary values (three mean
+    of measurements in X, Y, Z axes followed by three standard
+    deviations of measurements in X, Y Z axes) 
+    for the following measurements:
+        Body Acceleration
+        Gravity Acceleration
+        Body Acceleration Jerk
+        Body Gyroscope
+        Body Gyroscope Jerk
+  
+3. tBodyAcc-mean()-X 
+4. tBodyAcc-mean()-Y 
+5. tBodyAcc-mean()-Z 
+6. tBodyAcc-std()-X 
+7. tBodyAcc-std()-Y 
+8. tBodyAcc-std()-Z 
+9. tGravityAcc-mean()-X 
+10. tGravityAcc-mean()-Y 
+11. tGravityAcc-mean()-Z 
+12. tGravityAcc-std()-X 
+13. tGravityAcc-std()-Y 
+14. tGravityAcc-std()-Z 
+15. tBodyAccJerk-mean()-X 
+16. tBodyAccJerk-mean()-Y 
+17. tBodyAccJerk-mean()-Z 
+18. tBodyAccJerk-std()-X 
+19. tBodyAccJerk-std()-Y 
+20. tBodyAccJerk-std()-Z 
+21. tBodyGyro-mean()-X 
+22. tBodyGyro-mean()-Y 
+23. tBodyGyro-mean()-Z 
+24. tBodyGyro-std()-X 
+25. tBodyGyro-std()-Y 
+26. tBodyGyro-std()-Z 
+27. tBodyGyroJerk-mean()-X 
+28. tBodyGyroJerk-mean()-Y 
+29. tBodyGyroJerk-mean()-Z 
+30. tBodyGyroJerk-std()-X 
+31. tBodyGyroJerk-std()-Y 
+32. tBodyGyroJerk-std()-Z 
+
+Columns 33 thru 42: (Continuous [-1,1])
+    Five groups of two time domain summary values (mean &
+    standard deviation) where the X, Y, Z values of the
+    measurements in columns 3 thru 32 have been combined
+    (presumably RSS) into magnitudes
+
+33. tBodyAccMag-mean() 
+34. tBodyAccMag-std() 
+35. tGravityAccMag-mean() 
+36. tGravityAccMag-std() 
+37. tBodyAccJerkMag-mean() 
+38. tBodyAccJerkMag-std() 
+39. tBodyGyroMag-mean() 
+40. tBodyGyroMag-std() 
+41. tBodyGyroJerkMag-mean() 
+42. tBodyGyroJerkMag-std() 
+
+Columns 43 thru 60: (Continuous [-1,1])
+    Three groups of six frequency domain summary values (three mean
+    of measurements in X, Y, Z axes followed by three standard
+    deviations of measurements in X, Y Z axes) 
+    for the following measurements:
+        Body Acceleration
+        Body Acceleration Jerk
+        Body Gyroscope
+    NOTE: a fourth group of measurements for BodyGyroJerk is presumed
+          missing from the archived dataset as the magnitude does
+          appear in the next group
+    
+43. fBodyAcc-mean()-X 
+44. fBodyAcc-mean()-Y 
+45. fBodyAcc-mean()-Z 
+46. fBodyAcc-std()-X 
+47. fBodyAcc-std()-Y 
+48. fBodyAcc-std()-Z 
+49. fBodyAccJerk-mean()-X 
+50. fBodyAccJerk-mean()-Y 
+51. fBodyAccJerk-mean()-Z 
+52. fBodyAccJerk-std()-X 
+53. fBodyAccJerk-std()-Y 
+54. fBodyAccJerk-std()-Z 
+55. fBodyGyro-mean()-X 
+56. fBodyGyro-mean()-Y 
+57. fBodyGyro-mean()-Z 
+58. fBodyGyro-std()-X 
+59. fBodyGyro-std()-Y 
+60. fBodyGyro-std()-Z
+
+Columns 61 thru 68: (Continuous [-1,1])
+    Four groups of two time domain summary values (mean &
+    standard deviation) where the X, Y, Z values of the
+    measurements in columns 3 thru 32 have been combined
+    (presumably RSS) into magnitudes
+
+61. fBodyAccMag-mean() 
+62. fBodyAccMag-std() 
+63. fBodyBodyAccJerkMag-mean() 
+64. fBodyBodyAccJerkMag-std() 
+65. fBodyBodyGyroMag-mean() 
+66. fBodyBodyGyroMag-std() 
+67. fBodyBodyGyroJerkMag-mean() 
+68. fBodyBodyGyroJerkMag-std() 
+
+
+Remarks
+-------
+
+The test and training dataset includes 561 variables/columns, most of them were
+discarded per the request to include only the mean and standard deviation results
+in the tidy summary. That leaves 68 columns of variables in the tidy summary:
+2x factors (Subject & Activity) = 2
+5x time domain accel & gyro measurements in X, Y, Z (x2 for mean + std) = 30 columns
+5x time domain accel & gyro magnitude (x2 for mean + std) = 10 columns
+3x frequency domain accel & gyro measurements in X, Y, Z (x2 for mean + std) = 18 columns
+4x frequency domain accel & gyro magnitude (x2 for mean + std) = 8 columns
+
+2 + 30 + 10 + 18 + 8 = 68 columns total
+
+Note that the angle() column was discarded, therefore the five additional vectors
+included in the original dataset and referred to near the end of `features_info.txt`
+with 'Mean' in the name that are used on the angle() variable were also discarded.
 
 Reference
 ---------
 
-The code book
-
-For almost any data set, the measurements you calculate will need to be described in more detail than you will sneak into the spreadsheet. The code book contains this information. At minimum it should contain:
-
-Information about the variables (including units!) in the data set not contained in the tidy data
-Information about the summary choices you made
-Information about the experimental study design you used
-In our genomics example, the analyst would want to know what the unit of measurement for each clinical/demographic variable is (age in years, treatment by name/dose, level of diagnosis and how heterogeneous). They would also want to know how you picked the exons you used for summarizing the genomic data (UCSC/Ensembl, etc.). They would also want to know any other information about how you did the data collection/study design. For example, are these the first 20 patients that walked into the clinic? Are they 20 highly selected patients by some characteristic like age? Are they randomized to treatments?
-
-A common format for this document is a Word file. There should be a section called "Study design" that has a thorough description of how you collected the data. There is a section called "Code book" that describes each variable and its units.
-
-How to code variables
-
-When you put variables into a spreadsheet there are several main categories you will run into depending on their data type:
-
-Continuous
-Ordinal
-Categorical
-Missing
-Censored
-Continuous variables are anything measured on a quantitative scale that could be any fractional number. An example would be something like weight measured in kg. Ordinal data are data that have a fixed, small (< 100) number of levels but are ordered. This could be for example survey responses where the choices are: poor, fair, good. Categorical data are data where there are multiple categories, but they aren't ordered. One example would be sex: male or female. Missing data are data that are missing and you don't know the mechanism. You should code missing values as NA. Censored data/make up/ throw away missing observations.
-
-In general, try to avoid coding categorical or ordinal variables as numbers. When you enter the value for sex in the tidy data, it should be "male" or "female". The ordinal values in the data set should be "poor", "fair", and "good" not 1, 2 ,3. This will avoid potential mixups about which direction effects go and will help identify coding errors.
-
-Always encode every piece of information about your observations using text. For example, if you are storing data in Excel and use a form of colored text or cell background formatting to indicate information about an observation ("red variable entries were observed in experiment 1.") then this information will not be exported (and will be lost!) when the data is exported as raw text. Every piece of data should be encoded as actual text that can be exported.
+[UCI HAR Dataset](https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip)
